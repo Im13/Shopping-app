@@ -9,6 +9,7 @@ import { Subscription } from "rxjs";
 })
 
 export class HeaderComponent implements OnInit, OnDestroy {
+  isAuthenticated = false;
   collapsed = true;
   private userSub: Subscription;
 
@@ -19,14 +20,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userSub = this.authService.user.subscribe();
+    this.userSub = this.authService.user.subscribe(user => {
+      this.isAuthenticated = !!user;
+    });
   }
 
-  onSaveData() { 
+  onSaveData() {
     this.dataStorageService.storeRecipes();
   }
 
   onFetchData() {
     this.dataStorageService.fetchRecipes().subscribe();
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }
